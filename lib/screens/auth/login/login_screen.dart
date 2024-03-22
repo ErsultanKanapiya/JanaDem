@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
 import 'package:janadem/screens/auth/forgot_password/forgot_password.dart';
 import 'package:janadem/screens/auth/sign_up/sign_up_screen.dart';
+import 'package:janadem/screens/bottom_nav_bar.dart';
 import 'package:janadem/screens/widgets/textform_widget.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -224,7 +225,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             if(formKey.currentState!.validate()){
-
+                              Get.offAll(
+                                  () => const BottomNavBar()
+                              );
                             } else {
 
                             }

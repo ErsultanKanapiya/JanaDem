@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
 import 'package:janadem/screens/auth/login/login_screen.dart';
+import 'package:janadem/screens/bottom_nav_bar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 
@@ -29,6 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
       Get.offAll(
           () => const LoginScreen()
       );
+      // Get.offAll(
+      //         () => const BottomNavBar()
+      // );
     });
   }
 
@@ -46,10 +50,10 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 'JANADEM',
                 style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 23.sp,
-                  color: Colors.white,
-                  letterSpacing: 10.sp
+                    fontWeight: FontWeight.w500,
+                    fontSize: 23.sp,
+                    color: Colors.white,
+                    letterSpacing: 10.sp
                 ),
               )
             ],
