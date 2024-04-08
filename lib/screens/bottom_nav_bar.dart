@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:janadem/constants/assets.dart';
-import 'package:janadem/screens/add_problem/add_problem_screen.dart';
-import 'package:janadem/screens/gift/gifts_screen.dart';
-import 'package:janadem/screens/home/home_screen.dart';
-import 'package:janadem/screens/location/location_screen.dart';
-import 'package:janadem/screens/profile/profile_screen.dart';
+import 'package:janadem/screens/user/add_problem/add_problem_screen.dart';
+import 'package:janadem/screens/user/gift/gifts_screen.dart';
+import 'package:janadem/screens/user/home/home_screen.dart';
+import 'package:janadem/screens/user/location/location_screen.dart';
+import 'package:janadem/screens/user/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-final navBarController = StateProvider<PersistentTabController>((ref) => PersistentTabController(initialIndex: ref.watch(bottomNavBarIndexProvider)));
-final bottomNavBarIndexProvider = StateProvider<int>((ref) => 0);
+final navBarController = StateProvider<PersistentTabController>((ref) => PersistentTabController(initialIndex: ref.watch(userBottomNavBarIndexProvider)));
+final userBottomNavBarIndexProvider = StateProvider<int>((ref) => 0);
 
-class BottomNavBar extends ConsumerStatefulWidget {
-  const  BottomNavBar({super.key});
+class UserBottomNavBar extends ConsumerStatefulWidget {
+  const  UserBottomNavBar({super.key});
 
   @override
-  ConsumerState createState() => _BottomNavBarState();
+  ConsumerState createState() => _UserBottomNavBarState();
 }
 
-class _BottomNavBarState extends ConsumerState<BottomNavBar> {
+class _UserBottomNavBarState extends ConsumerState<UserBottomNavBar> {
 
   BuildContext? _tabContext;
 
 
   @override
   Widget build(BuildContext context) {
-
 
     final List<Widget> screens = [
       const HomeScreen(),
@@ -40,7 +40,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           '${Assets().icn}home.svg',
-          color: ref.watch(bottomNavBarIndexProvider) == 0
+          color: ref.watch(userBottomNavBarIndexProvider) == 0
           ? const Color(0xff056C5F)
           : const Color(0xff8B97A8),
         ),
@@ -48,7 +48,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           '${Assets().icn}location.svg',
-          color: ref.watch(bottomNavBarIndexProvider) == 1
+          color: ref.watch(userBottomNavBarIndexProvider) == 1
               ? const Color(0xff056C5F)
               : const Color(0xff8B97A8),
         ),
@@ -56,7 +56,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           '${Assets().icn}plus.svg',
-          color: ref.watch(bottomNavBarIndexProvider) == 2
+          color: ref.watch(userBottomNavBarIndexProvider) == 2
               ? const Color(0xff056C5F)
               : const Color(0xff8B97A8),
         ),
@@ -64,7 +64,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           '${Assets().icn}gift.svg',
-          color: ref.watch(bottomNavBarIndexProvider) == 3
+          color: ref.watch(userBottomNavBarIndexProvider) == 3
               ? const Color(0xff056C5F)
               : const Color(0xff8B97A8),
         ),
@@ -72,12 +72,14 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           '${Assets().icn}profile.svg',
-          color: ref.watch(bottomNavBarIndexProvider) == 4
+          color: ref.watch(userBottomNavBarIndexProvider) == 4
               ? const Color(0xff056C5F)
               : const Color(0xff8B97A8),
         ),
       ),
     ];
+
+
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -99,7 +101,7 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
               )
           ),
           onItemSelected: (int index){
-            ref.watch(bottomNavBarIndexProvider.notifier).state = index;
+            ref.watch(userBottomNavBarIndexProvider.notifier).state = index;
           },
           selectedTabScreenContext: (BuildContext? tabContext) {
             _tabContext = tabContext;
