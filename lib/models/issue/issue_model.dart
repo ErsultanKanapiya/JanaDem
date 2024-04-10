@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-
 part 'issue_model.freezed.dart';
 part 'issue_model.g.dart';
 
@@ -14,7 +13,8 @@ class IssueModel with _$IssueModel {
     required double longitude,
     required double latitude,
     required String status,
-    required int creator
+    required Map creator,
+    required List next_statuses
   }) = _IssueModel;
 
   factory IssueModel.fromJson(Map<String, dynamic> json) =>

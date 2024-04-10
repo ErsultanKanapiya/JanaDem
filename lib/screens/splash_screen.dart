@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:janadem/constants/assets.dart';
+import 'package:janadem/screens/akim/akim_bottom_nav_bar.dart';
 import 'package:janadem/screens/akim/auth/login_screen/akim_login_screen.dart';
 import 'package:janadem/screens/bottom_nav_bar.dart';
 import 'package:janadem/screens/user/auth/login/login_screen.dart';
@@ -18,6 +20,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+  var box = Hive.box('accountData');
 
   @override
   void initState() {
@@ -43,10 +47,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> initServer() async{
     Future.delayed(const Duration(seconds: 2), (){
-      // Get.offAll(
-      //     () => const LoginScreen()
-      // );
-      chooseEnroll();
+      if(box.get('access') == '' || box.get('access') == null) {
+        chooseEnroll();
+      } else {
+        if(box.get('user') != null){
+          Get.offAll(
+                  () => const UserBottomNavBar()
+          );
+        } else if (box.get('akim') != null){
+          Get.offAll(
+                  () => const AkimBottomNavBar()
+          );
+        } else {
+          chooseEnroll();
+        }
+
+      }
     });
   }
 
@@ -121,6 +137,41 @@ class EnrollType extends StatelessWidget {
                 ),
 
                 Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.offAll(
+                                () => const LoginScreen(status: 1)
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(
+                                width: 1,
+                                color: Color(0xff1849D6)
+                            ),
+                          ),
+                          backgroundColor: Colors.white,
+                          splashFactory: NoSplash.splashFactory,
+                          elevation: 0
+                      ),
+                      child: Text(
+                        'User',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xff1849D6)
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: SizedBox(
                     width: double.infinity,
@@ -128,7 +179,7 @@ class EnrollType extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         Get.offAll(
-                                () => const AkimLoginScreen()
+                                () => const AkimLoginScreen(status: 3)
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -159,7 +210,7 @@ class EnrollType extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () async {
                         Get.offAll(
-                                () => const LoginScreen()
+                                () => const AkimLoginScreen(status: 2)
                         );
                         // Get.offAll(
                         //     () => const UserBottomNavBar()
@@ -178,7 +229,7 @@ class EnrollType extends StatelessWidget {
                           elevation: 0
                       ),
                       child: Text(
-                        'User',
+                        'Moderator',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
                             fontSize: 17,

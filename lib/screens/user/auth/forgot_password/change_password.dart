@@ -121,7 +121,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Необходимо заполнить поле';
+                                  return 'It is necessary to fill in the field';
                                 } else {
                                   return null;
                                 }
@@ -190,7 +190,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Необходимо заполнить поле';
+                                  return 'It is necessary to fill in the field';
                                 } else {
                                   return null;
                                 }

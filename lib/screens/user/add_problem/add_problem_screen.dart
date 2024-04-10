@@ -74,7 +74,14 @@ class _AddProblemScreenState extends ConsumerState<AddProblemScreen> {
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey.shade400
+                          color: Colors.grey.shade200
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.photo_camera,
+                           color: Colors.white,
+                          size: 35,
+                        ),
                       ),
                     ),
                   )
@@ -139,6 +146,7 @@ class _AddProblemScreenState extends ConsumerState<AddProblemScreen> {
                       ),
                     ),
                   ),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: TextFormField(
@@ -148,6 +156,7 @@ class _AddProblemScreenState extends ConsumerState<AddProblemScreen> {
                       textAlignVertical: TextAlignVertical.center,
                       keyboardType: TextInputType.text,
                       controller: titleController,
+                      maxLines: 1,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
                         border: textFieldBorder(const Color(0xff797979)),
@@ -173,7 +182,7 @@ class _AddProblemScreenState extends ConsumerState<AddProblemScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Необходимо заполнить поле';
+                          return 'It is necessary to fill in the field';
                         } else {
                           return null;
                         }
@@ -189,6 +198,7 @@ class _AddProblemScreenState extends ConsumerState<AddProblemScreen> {
                       maxLength: 1500,
                       expands: true,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
                           contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
                           border: textFieldBorder(const Color(0xff797979)),

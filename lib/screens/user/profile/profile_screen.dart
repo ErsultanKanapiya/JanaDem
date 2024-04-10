@@ -4,12 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
+import 'package:janadem/constants/hive_boxes.dart';
 import 'package:janadem/screens/splash_screen.dart';
-import 'package:janadem/screens/user/auth/login/login_screen.dart';
 import 'package:janadem/screens/user/profile/edit_profile/edit_profile.dart';
 import 'package:janadem/screens/user/profile/language/language_screen.dart';
 import 'package:janadem/screens/user/profile/notifications/notifications_change.dart';
 import 'package:janadem/screens/user/profile/privacy_policy/privacy_profile.dart';
+import 'package:janadem/screens/widgets/wait_alert.dart';
 
 import '../../bottom_nav_bar.dart';
 
@@ -21,13 +22,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: const Color(0xff5FAFAF),
-          surfaceTintColor: const Color(0xff5FAFAF),
           actions: [
             IconButton(
                 onPressed: (){},
@@ -39,174 +39,141 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ],
         ),
         body: SafeArea(
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  children: [
-                    ClipPath(
-                      clipper: BottomClipper(),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.25,
-                        width: MediaQuery.of(context).size.width,
-                        color: const Color(0xff5FAFAF),
-                      ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                    ),
-                  ],
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: ListView(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('${Assets().img}ava.jpg'),
                 ),
-              ),
 
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: ListView(
-                  children: [
-
-                    SizedBox(height: MediaQuery.of(context).size.height*0.25-100),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('${Assets().img}ava.jpg'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    '${acc.get('user')['first_name']} ${acc.get('user')['last_name']}',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black
                     ),
+                  ),
+                ),
+                Text(
+                  'Kazakhstan, Almaty | ${acc.get('user')['phone_number']}',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black
+                  ),
+                ),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Text(
-                        'Babakhan Fatima',
-                        textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset('${Assets().icn}coins.svg'),
+                      Text(
+                        '${acc.toMap()['user']['balance']} coins',
                         style: GoogleFonts.inter(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black
                         ),
                       ),
-                    ),
-                    Text(
-                      'Kazakhstan, Almaty | +7 700 096 00',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset('${Assets().icn}coins.svg'),
-                          Text(
-                            '1045 coins',
-                            style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    mainContainer(
-                      rowOfElements('merch_store', 'Merch store', false, Container(), (){}),
-                    ),
-
-                    mainContainer(
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            rowOfElements('help_and_support', 'Help & Support', false, Container(), (){}),
-                            rowOfElements('contact_us', 'Contact us', false, Container(), (){}),
-                            rowOfElements('privacy_policy', 'Privacy policy', false, Container(), (){
-                              Get.to(
-                                  () => const PrivacyPolicy()
-                              );
-                            }),
-                          ],
-                        )
-                    ),
-
-                    mainContainer(
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            rowOfElements('edit_profile', 'Edit profile information', false, Container(), (){
-                              Get.to(
-                                  () => const EditProfileScreen()
-                              );
-                            }),
-                            rowOfElements('notification', 'Notifications', true,
-                                Text(
-                                  'ON',
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: const Color(0xff056C5F)
-                                  ),
-                                ),
-                                    (){
-                                      Get.to(
-                                              () => const NotificationsChangeScreen()
-                                      );
-                                    }),
-                            rowOfElements('language', 'Language', true,
-                                Text(
-                                  'English',
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: const Color(0xff056C5F)
-                                  ),
-                                ), (){
-                                  Get.to(
-                                          () => const LanguageScreen()
-                                  );
-                                }),
-                          ],
-                        )
-                    ),
-
-                    mainContainer(
-                        InkWell(
-                          onTap: (){
-                            ref.watch(userBottomNavBarIndexProvider.notifier).state = 0;
-                            Get.offAll(
-                                () => const SplashScreen()
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset('${Assets().icn}logout.svg'),
-                                const SizedBox(
-                                    width: 12
-                                ),
-                                Text(
-                                  'Log out',
-                                  style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: const Color(0xffEB4335)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                    ),
-
-
-                  ],
+                    ],
+                  ),
                 ),
-              )
-            ],
+
+                mainContainer(
+                  rowOfElements('merch_store', 'Merch store', false, Container(), () => showWaitingAlert(context)),
+                ),
+
+                mainContainer(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        rowOfElements('help_and_support', 'Help & Support', false, Container(), () => showWaitingAlert(context)),
+                        rowOfElements('contact_us', 'Contact us', false, Container(), () => showWaitingAlert(context)),
+                        rowOfElements('privacy_policy', 'Privacy policy', false, Container(), (){
+                          Get.to(
+                              () => const PrivacyPolicy()
+                          );
+                        }),
+                      ],
+                    )
+                ),
+
+                mainContainer(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        rowOfElements('edit_profile', 'Edit profile information', false, Container(), (){
+                          Get.to(
+                              () => const EditProfileScreen()
+                          );
+                        }),
+                        rowOfElements('notification', 'Notifications', true,
+                            Text(
+                              'ON',
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: const Color(0xff056C5F)
+                              ),
+                            ),
+                                () => showWaitingAlert(context)),
+                        rowOfElements('language', 'Language', true,
+                            Text(
+                              'English',
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: const Color(0xff056C5F)
+                              ),
+                            ), () => showWaitingAlert(context)),
+                      ],
+                    )
+                ),
+
+                mainContainer(
+                    InkWell(
+                      onTap: (){
+                        acc.clear();
+                        ref.watch(userBottomNavBarIndexProvider.notifier).state = 0;
+                        Get.offAll(
+                            () => const SplashScreen()
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset('${Assets().icn}logout.svg'),
+                            const SizedBox(
+                                width: 12
+                            ),
+                            Text(
+                              'Log out',
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xffEB4335)
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                ),
+
+
+              ],
+            ),
           ),
         )
     );

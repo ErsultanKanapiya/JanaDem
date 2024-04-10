@@ -88,14 +88,15 @@ class _CameraScreenState extends State<CameraScreen> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  GestureDetector(
-                      onTap: () {},
-                      child: CircleAvatar(
-                          radius: 27,
-                          backgroundColor: Colors.white,
-                          child: SvgPicture.asset('${Assets().icn}gallery.svg')
-                      )
-                  ),
+                  // GestureDetector(
+                  //     onTap: () {},
+                  //     child: CircleAvatar(
+                  //         radius: 27,
+                  //         backgroundColor: Colors.white,
+                  //         child: SvgPicture.asset('${Assets().icn}gallery.svg')
+                  //     )
+                  // ),
+                  Container(width: 54,),
                   GestureDetector(
                       onTap: () {
                         takePhoto(context);

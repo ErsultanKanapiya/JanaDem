@@ -9,10 +9,12 @@ import 'package:janadem/requests/auth/login/login.dart';
 import 'package:janadem/screens/user/auth/forgot_password/forgot_password.dart';
 import 'package:janadem/screens/user/auth/sign_up/sign_up_screen.dart';
 import 'package:janadem/screens/widgets/textform_widget.dart';
+import 'package:janadem/screens/widgets/wait_alert.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final int status;
+  const LoginScreen({super.key, required this.status});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -107,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                              hintText: '+7(701) 000-00-00',
+                              hintText: '+7(700) 000-00-00',
                               fillColor: Colors.white,
                               hintStyle: GoogleFonts.inter(
                                 color: const Color(0xffBCBCBC),
@@ -121,7 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
+                              } else if (value.length != 17) {
+                                return 'Incorrect data';
                               } else {
                                 return null;
                               }
@@ -189,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -206,9 +210,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           GestureDetector(
                             onTap: (){
-                              Get.to(
-                                      () => const ForgotPasswordScreen()
-                              );
+                              showWaitingAlert(context);
+                              // Get.to(
+                              //         () => const ForgotPasswordScreen()
+                              // );
                             },
                             child: Text(
                               'Forgot Password?',
@@ -234,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 loginButtonPressed = true;
                               });
-                              await apiLogin.login(phoneNumberController.text, passwordController.text);
+                              await apiLogin.login(phoneNumberController.text, passwordController.text, widget.status);
                               setState(() {
                                 loginButtonPressed = false;
                               });
@@ -286,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           GestureDetector(
                             onTap: (){
                               Get.offAll(
-                                      () => const SignUpScreen()
+                                      () => const SignUpScreen(status: 1)
                               );
                             },
                             child: Text(

@@ -8,12 +8,12 @@ import 'package:janadem/constants/assets.dart';
 import 'package:janadem/dio/dio_client.dart';
 import 'package:janadem/requests/auth/register/register.dart';
 import 'package:janadem/screens/user/auth/login/login_screen.dart';
-import 'package:janadem/screens/user/auth/verification_screen/verification_screen.dart';
 import 'package:janadem/screens/widgets/textform_widget.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  final int status;
+  const SignUpScreen({super.key, required this.status});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -42,6 +42,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool passwordVisible = true;
   bool passwordConfirmVisible = true;
+
+  bool registerButtonPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               hintText: 'Name',
                               hintStyle: GoogleFonts.inter(
                                   color: const Color(0xffBCBCBC),
@@ -122,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -162,6 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               hintText: 'Surname',
                               hintStyle: GoogleFonts.inter(
                                   color: const Color(0xffBCBCBC),
@@ -177,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -223,6 +227,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                               hintText: '+7(701) 000-00-00',
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               hintStyle: GoogleFonts.inter(
                                 color: const Color(0xffBCBCBC),
                                 fontSize: 14,
@@ -235,7 +240,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
+                              } else if (value.length != 17) {
+                                return 'Incorrect data';
                               } else {
                                 return null;
                               }
@@ -278,6 +285,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               hintText: 'Email',
                               hintStyle: GoogleFonts.inter(
                                   color: const Color(0xffBCBCBC),
@@ -293,7 +301,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -320,6 +328,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             cursorColor: const Color(0xff1A1B22),
                             cursorWidth: 1,
                             cursorHeight: 20,
+                            readOnly: true,
                             textAlignVertical: TextAlignVertical.center,
                             keyboardType: TextInputType.datetime,
                             controller: dateOfBirthController,
@@ -333,6 +342,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               suffixIcon: GestureDetector(
                                   onTap: () async {
                                     DateTime? pickedDate = await showDatePicker(
@@ -340,14 +350,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime(1900),
                                         lastDate: DateTime.now(),
-                                      locale: const Locale('ru')
+                                      locale: const Locale('en')
                                     );
 
                                     if(pickedDate != null ){
                                       String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
 
                                       setState(() {
-                                        dateOfBirthController.text = formattedDate; //set output date to TextField value.
+                                        dateOfBirthController.text = formattedDate;
                                       });
                                     }
                                   },
@@ -368,7 +378,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -409,6 +419,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               suffixIcon: GestureDetector(
                                 onTap: (){
                                   setState(() {
@@ -434,7 +445,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
+                              } else if (value.length < 8) {
+                                return 'Password must be longer than 8 characters';
                               } else {
                                 return null;
                               }
@@ -475,6 +488,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
                               fillColor: Colors.white,
+                              errorMaxLines: 2,
                               suffixIcon: GestureDetector(
                                 onTap: (){
                                   setState(() {
@@ -500,7 +514,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
+                              } else if (value != passwordController.text) {
+                                return 'Passwords don\'t match';
                               } else {
                                 return null;
                               }
@@ -518,14 +534,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             if(formKey.currentState!.validate()){
+                              setState(() {
+                                registerButtonPressed = true;
+                              });
                               final parsedDate = DateFormat('MM/dd/yyyy').parse(dateOfBirthController.text);
                               await apiRegister.register(nameController.text, lastnameController.text, phoneNumberController.text, emailController.text, DateFormat('yyyy-MM-dd').format(parsedDate), passwordController.text);
+                              setState(() {
+                                registerButtonPressed = false;
+                              });
                             } else {
 
                             }
-                            // Get.to(
-                            //         () => const VerificationScreen()
-                            // );
                           },
                           style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -535,7 +554,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               splashFactory: NoSplash.splashFactory,
                               elevation: 0
                           ),
-                          child: Text(
+                          child: registerButtonPressed
+                              ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                          : Text(
                             'Sign Up',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(
@@ -565,7 +590,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           GestureDetector(
                             onTap: () {
                               Get.offAll(
-                                      () => const LoginScreen()
+                                      () => const LoginScreen(status: 1)
                               );
                             },
                             child: Text(

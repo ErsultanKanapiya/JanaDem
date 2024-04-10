@@ -5,27 +5,39 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:janadem/constants/api.dart';
 import 'package:janadem/dio/dio_client.dart';
-import 'package:janadem/dio/dio_exceptions.dart';
+import 'package:janadem/requests/get_user_info/get_user_info.dart';
+import 'package:oktoast/oktoast.dart';
 
-class ApiGetUserInfo{
+class ApiChangeStatus{
   var box = Hive.box('accountData');
   final DioClient _dioClient;
 
-  ApiGetUserInfo(this._dioClient);
+  final dio = Dio(BaseOptions());
+  late final ApiGetUserInfo apiGetUserInfo = ApiGetUserInfo(DioClient(dio));
 
-  Future<void> getUserInfo() async {
-    final String url = '${Endpoints().mainEndpoint}/v1/user/request_user_info/';
+  ApiChangeStatus(this._dioClient);
+
+  Future<void> editProfileInfo(String issue_id, String status_id) async {
+    final String url = '${Endpoints().mainEndpoint}/v1/issue/change_status/';
 
     final headers = {
       'Accept': 'application/json',
       'Authorization': 'JWT ${box.get('access')}'
     };
 
-    try {
-      final res = await _dioClient.get(url, options: Options(headers: headers));
-      if (res.statusCode == 200) {
+    Map fields = {
+      'issue_id': issue_id,
+      'status_id': status_id,
+    };
 
-        box.put('user', res.data);
+    try {
+      final res = await _dioClient.post(url, data: fields, options: Options(headers: headers));
+      if (res.statusCode == 200 || res.statusCode==201) {
+
+        await apiGetUserInfo.getUserInfo();
+
+        showToast('Edited successfully',
+            position: const ToastPosition(align: Alignment.bottomCenter));
 
       } else {
         debugPrint(res.data['message'].toString());
@@ -36,7 +48,7 @@ class ApiGetUserInfo{
               content: Container(
                 color: Colors.white,
                 child: Text(
-                  res.data['message'].toString(),
+                  'Something went wrong! Try it later!',
                   style: GoogleFonts.roboto(
                     fontWeight: FontWeight.normal,
                     color: const Color(0xFF2F3556),
@@ -71,7 +83,7 @@ class ApiGetUserInfo{
             content: Container(
               color: Colors.white,
               child: Text(
-                DioExceptions.fromDioError(e).toString(),
+                'Something went wrong! Try it later!',
                 style: GoogleFonts.roboto(
                   fontWeight: FontWeight.normal,
                   color: const Color(0xFF2F3556),

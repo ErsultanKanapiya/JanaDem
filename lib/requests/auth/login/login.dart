@@ -7,6 +7,8 @@ import 'package:janadem/constants/api.dart';
 import 'package:janadem/dio/dio_client.dart';
 import 'package:janadem/dio/dio_exceptions.dart';
 import 'package:janadem/requests/get_user_info/get_user_info.dart';
+import 'package:janadem/screens/akim/akim_bottom_nav_bar.dart';
+import 'package:janadem/screens/bottom_nav_bar.dart';
 
 class ApiLogin{
   var box = Hive.box('accountData');
@@ -14,7 +16,7 @@ class ApiLogin{
 
   ApiLogin(this._dioClient);
 
-  Future<void> login(String phone, String password) async {
+  Future<void> login(String phone, String password, int status) async {
     final String url = '${Endpoints().mainEndpoint}/v1/user/login';
 
     final dio = Dio(BaseOptions());
@@ -25,7 +27,7 @@ class ApiLogin{
     };
     final fields = {
       'phone_number': phone.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', ''),
-      'password': password
+      'password': password,
     };
 
     try {
@@ -36,6 +38,16 @@ class ApiLogin{
         box.put('access', res.data['access']);
 
         await apiGetUserInfo.getUserInfo();
+
+        if(status == 1){
+          Get.offAll(
+                  () => const UserBottomNavBar()
+          );
+        } else {
+          Get.offAll(
+                  () => const AkimBottomNavBar()
+          );
+        }
 
       } else {
         debugPrint(res.data['message'].toString());
@@ -74,38 +86,85 @@ class ApiLogin{
         debugPrint('Что-то пошло не так!');
       }
     } on DioException catch (e) {
-      Get.dialog(
-          AlertDialog(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            content: Container(
-              color: Colors.white,
-              child: Text(
-                DioExceptions.fromDioError(e).toString(),
-                style: GoogleFonts.roboto(
-                  fontWeight: FontWeight.normal,
-                  color: const Color(0xFF2F3556),
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Get.back();
-                  },
+      if (e.response != null) {
+
+        Map<String, dynamic> errorData = e.response!.data;
+        String errorMessage = '';
+
+        errorData.forEach((key, value) {
+          errorMessage += '${value.toString()}\n';
+        });
+
+
+        if (errorData.isNotEmpty) {
+
+          Get.dialog(
+              AlertDialog(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                content: Container(
+                  color: Colors.white,
                   child: Text(
-                    'Закрыть',
+                    errorMessage,
                     style: GoogleFonts.roboto(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.normal,
                       color: const Color(0xFF2F3556),
                       fontSize: 16,
                     ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: (){
+                        Get.back();
+                      },
+                      child:  Text(
+                        'Закрыть',
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF2F3556),
+                          fontSize: 16,
+                        ),
+                      )
                   )
+                ],
               )
-            ],
-          )
-      );
+          );
+        }
+      } else {
+        Get.dialog(
+            AlertDialog(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              content: Container(
+                color: Colors.white,
+                child: Text(
+                  DioExceptions.fromDioError(e).toString(),
+                  style: GoogleFonts.roboto(
+                    fontWeight: FontWeight.normal,
+                    color: const Color(0xFF2F3556),
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: (){
+                      Get.back();
+                    },
+                    child:  Text(
+                      'Закрыть',
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF2F3556),
+                        fontSize: 16,
+                      ),
+                    )
+                )
+              ],
+            )
+        );
+      }
     }
   }
 }

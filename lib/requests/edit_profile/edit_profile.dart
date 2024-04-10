@@ -2,41 +2,44 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:janadem/constants/api.dart';
 import 'package:janadem/dio/dio_client.dart';
 import 'package:janadem/dio/dio_exceptions.dart';
-import 'package:janadem/screens/user/auth/login/login_screen.dart';
+import 'package:janadem/requests/get_user_info/get_user_info.dart';
+import 'package:janadem/screens/bottom_nav_bar.dart';
 import 'package:oktoast/oktoast.dart';
 
-class ApiRegister{
+class ApiEditProfile{
+  var box = Hive.box('accountData');
   final DioClient _dioClient;
 
-  ApiRegister(this._dioClient);
+  final dio = Dio(BaseOptions());
+  late final ApiGetUserInfo apiGetUserInfo = ApiGetUserInfo(DioClient(dio));
 
-  Future<void> register(String first_name, String lastname, String phone, String email, String dateOfBirth, String password) async {
-    final String url = '${Endpoints().mainEndpoint}/v1/user/';
+  ApiEditProfile(this._dioClient);
+
+  Future<void> editProfileInfo(Map data) async {
+    final String url = '${Endpoints().mainEndpoint}/v1/user/${box.get('user')['id']}/';
 
     final headers = {
       'Accept': 'application/json',
-    };
-    final fields = {
-      'first_name': first_name,
-      'last_name': lastname,
-      'phone_number': phone.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', ''),
-      'email': email,
-      'birth_date': dateOfBirth,
-      'password': password,
-      'user_type': 1,
+      'Authorization': 'JWT ${box.get('access')}'
     };
 
-    try{
-      final res = await _dioClient.post(url, data: fields, options: Options(headers: headers));
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        showToast('Registered successfully',
+    try {
+      final res = await _dioClient.patch(url, data: data, options: Options(headers: headers));
+      if (res.statusCode == 200 || res.statusCode==201) {
+
+        await apiGetUserInfo.getUserInfo();
+
+        showToast('Edited successfully',
             position: const ToastPosition(align: Alignment.bottomCenter));
+
         Get.offAll(
-            () => const LoginScreen(status: 1)
+                () => const UserBottomNavBar()
         );
+
       } else {
         debugPrint(res.data['message'].toString());
         Get.dialog(
@@ -56,10 +59,10 @@ class ApiRegister{
               ),
               actions: [
                 TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       Get.back();
                     },
-                    child:  Text(
+                    child: Text(
                       'Закрыть',
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.bold,

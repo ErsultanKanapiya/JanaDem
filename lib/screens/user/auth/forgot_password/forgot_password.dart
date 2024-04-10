@@ -122,7 +122,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Необходимо заполнить поле';
+                                  return 'It is necessary to fill in the field';
                                 } else {
                                   return null;
                                 }

@@ -1,16 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
-import 'package:janadem/screens/akim/akim_bottom_nav_bar.dart';
-import 'package:janadem/screens/bottom_nav_bar.dart';
-import 'package:janadem/screens/user/auth/forgot_password/forgot_password.dart';
+import 'package:janadem/dio/dio_client.dart';
+import 'package:janadem/requests/auth/login/login.dart';
 import 'package:janadem/screens/widgets/textform_widget.dart';
+import 'package:janadem/screens/widgets/wait_alert.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class AkimLoginScreen extends StatefulWidget {
-  const AkimLoginScreen({super.key});
+  final int status;
+  const AkimLoginScreen({super.key, required this.status});
 
   @override
   State<AkimLoginScreen> createState() => _AkimLoginScreenState();
@@ -20,7 +21,12 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
 
   final formKey = GlobalKey<FormState>();
 
-  TextEditingController emailController = TextEditingController();
+  final dio = Dio(BaseOptions());
+  late final ApiLogin apiLogin = ApiLogin(DioClient(dio));
+
+  bool loginButtonPressed = false;
+
+  TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   var maskFormatter = MaskTextInputFormatter(
@@ -73,7 +79,7 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Citizen name',
+                          'Phone Number',
                           style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -83,16 +89,16 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: TextFormField(
-                            controller: emailController,
+                            controller: phoneNumberController,
                             cursorColor: const Color(0xff1A1B22),
                             cursorWidth: 1,
-                            cursorHeight: 20,
-                            keyboardType: TextInputType.emailAddress,
+                            keyboardType: TextInputType.text,
                             style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400,
-                                fontSize: 17,
+                                fontSize: 14,
                                 color: const Color(0xff1A1B22)
                             ),
+                            inputFormatters: [maskFormatter],
                             decoration: InputDecoration(
                               border: textFieldBorder(const Color(0xff797979)),
                               focusedBorder: textFieldBorder(const Color(0xff797979)),
@@ -101,12 +107,12 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                               errorBorder: textFieldBorder(const Color(0xffFF3636)),
                               focusedErrorBorder: textFieldBorder(const Color(0xffFF3636)),
                               filled: true,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                              hintText: 'government@email.com',
+                              contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+                              hintText: '+7(700) 000-00-00',
                               fillColor: Colors.white,
                               hintStyle: GoogleFonts.inter(
                                 color: const Color(0xffBCBCBC),
-                                fontSize: 17,
+                                fontSize: 14,
                               ),
                               errorStyle: GoogleFonts.inter(
                                 color: const Color(0xffFF3636),
@@ -116,7 +122,9 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
+                              } else if (value.length != 17) {
+                                return 'Incorrect data';
                               } else {
                                 return null;
                               }
@@ -185,7 +193,7 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Необходимо заполнить поле';
+                                return 'It is necessary to fill in the field';
                               } else {
                                 return null;
                               }
@@ -202,9 +210,7 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                         children: [
                           GestureDetector(
                             onTap: (){
-                              Get.to(
-                                      () => const ForgotPasswordScreen()
-                              );
+                              showWaitingAlert(context);
                             },
                             child: Text(
                               'Forgot Password?',
@@ -227,11 +233,13 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                         child: ElevatedButton(
                           onPressed: () async {
                             if(formKey.currentState!.validate()){
-                              Get.offAll(
-                                      () => const AkimBottomNavBar()
-                              );
-                            } else {
-
+                              setState(() {
+                                loginButtonPressed = true;
+                              });
+                              await apiLogin.login(phoneNumberController.text, passwordController.text, widget.status);
+                              setState(() {
+                                loginButtonPressed = false;
+                              });
                             }
                           },
                           style: ElevatedButton.styleFrom(

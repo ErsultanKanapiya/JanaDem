@@ -5,8 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:janadem/constants/assets.dart';
+import 'package:janadem/constants/hive_boxes.dart';
 import 'package:janadem/dio/dio_client.dart';
-import 'package:janadem/requests/get_issue.dart';
+import 'package:janadem/requests/issue/get_issue.dart';
+import 'package:janadem/requests/get_user_info/get_user_info.dart';
+import 'package:janadem/screens/widgets/progress_indicator.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -19,15 +22,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   final dio = Dio(BaseOptions());
   late final ApiGetIssue apiGetIssue = ApiGetIssue(DioClient(dio));
+  late final ApiGetUserInfo apiGetUserInfo = ApiGetUserInfo(DioClient(dio));
 
   Map data = {};
 
-  final accountData = Hive.box('accountData');
+
+  bool initUserData = false;
+
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+  }
+
+  Future<void> getUserInfo() async {
+    setState(() {
+      initUserData = true;
+    });
+    await apiGetUserInfo.getUserInfo();
+    setState(() {
+      initUserData = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    print(accountData.toMap());
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -39,7 +58,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         body: SafeArea(
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: ListView(
+            child: initUserData
+            ? greenProgressIndicator()
+            : ListView(
               shrinkWrap: true,
               children: [
 
@@ -55,16 +76,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          GestureDetector(
-                            onTap: () async {
-                              data = await apiGetIssue.getIssue(1);
-
-                              print(data);
-                            },
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundImage: AssetImage('${Assets().img}ava.jpg'),
-                            ),
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundImage: AssetImage('${Assets().img}ava.jpg'),
                           ),
                           const SizedBox(width: 15),
                           Column(
@@ -81,7 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                '${accountData.toMap()['user']['last_name']} ${accountData.toMap()['user']['first_name']}',
+                                '${acc.toMap()['user']['last_name']} ${acc.toMap()['user']['first_name']}',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
                                     fontSize: 16,
@@ -101,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           children: [
                             SvgPicture.asset('${Assets().icn}coins.svg'),
                             Text(
-                              '1045',
+                              '${acc.toMap()['user']['balance']}',
                               style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,

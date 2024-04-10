@@ -54,45 +54,45 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 50,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                textAlignVertical: TextAlignVertical.center,
-                keyboardType: TextInputType.text,
-                controller: searchController,
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFFE3E5E5))
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFFE3E5E5))
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: SvgPicture.asset('${Assets().icn}search.svg', height: 20, width: 20, fit: BoxFit.scaleDown),
-                    hintText: 'Search here',
-                    hintStyle: GoogleFonts.inter(
-                        color: const Color(0xff64748B),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16
-                    )
-
-                ),
-              ),
-            ),
+            // Container(
+            //   width: double.infinity,
+            //   height: 50,
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   child: TextFormField(
+            //     textAlignVertical: TextAlignVertical.center,
+            //     keyboardType: TextInputType.text,
+            //     controller: searchController,
+            //     decoration: InputDecoration(
+            //         contentPadding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+            //         enabledBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.circular(10),
+            //             borderSide: const BorderSide(color: Color(0xFFE3E5E5))
+            //         ),
+            //         focusedBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.circular(10),
+            //             borderSide: const BorderSide(color: Color(0xFFE3E5E5))
+            //         ),
+            //         filled: true,
+            //         fillColor: Colors.white,
+            //         suffixIcon: SvgPicture.asset('${Assets().icn}search.svg', height: 20, width: 20, fit: BoxFit.scaleDown),
+            //         hintText: 'Search here',
+            //         hintStyle: GoogleFonts.inter(
+            //             color: const Color(0xff64748B),
+            //             fontWeight: FontWeight.w400,
+            //             fontSize: 16
+            //         )
+            //
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TabBar(
-                isScrollable: true,
+                isScrollable: false,
                 splashFactory: NoSplash.splashFactory,
                 controller: _tabController,
                 labelColor: Colors.black,
-                tabAlignment: TabAlignment.start,
+                tabAlignment: TabAlignment.fill,
                 unselectedLabelColor: const Color(0xff64748B),
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicator: const UnderlineTabIndicator(
@@ -138,12 +138,12 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                   controller: _tabController,
                   children: [
                     issues.isLoading
-                    ? const Center(
+                        ? const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xff056C5F),
                       ),
                     )
-                    : ListView.builder(
+                        : ListView.builder(
                         shrinkWrap: true,
                         itemCount: issues.issues!.issuesList.length,
                         itemBuilder: (context, index){
@@ -155,7 +155,7 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.blueAccent)
+                                border: Border.all(color: Colors.blueAccent)
                             ),
                             child: Row(
                               children: [
@@ -211,8 +211,158 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                           );
                         }
                     ),
-                    Container(),
-                    Container(),
+                    issues.isLoading
+                        ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xff056C5F),
+                      ),
+                    )
+                        : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: issues.issues!.issuesList.length,
+                        itemBuilder: (context, index){
+                          final singleIssue = issues.issues!.issuesList[index];
+                          return singleIssue.status == 'IN_PROGRESS'
+                              ? Container(
+                            height: 180,
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.blueAccent)
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                      height: 170,
+                                      width: 130,
+                                      child: Image.network(
+                                        singleIssue.image,
+                                        fit: BoxFit.cover,
+                                      )
+                                  ),
+                                ),
+
+                                Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            singleIssue.title,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            singleIssue.description,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 10),
+
+                                          Text(
+                                            '${singleIssue.longitude}, ${singleIssue.latitude}',
+                                            softWrap: true,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 13,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                )
+                              ],
+                            ),
+                          )
+                              : Container();
+                        }
+                    ),
+                    issues.isLoading
+                        ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xff056C5F),
+                      ),
+                    )
+                        : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: issues.issues!.issuesList.length,
+                        itemBuilder: (context, index){
+                          final singleIssue = issues.issues!.issuesList[index];
+                          return singleIssue.status == 'FINISHED'
+                              ? Container(
+                            height: 180,
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.blueAccent)
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                      height: 170,
+                                      width: 130,
+                                      child: Image.network(
+                                        singleIssue.image,
+                                        fit: BoxFit.cover,
+                                      )
+                                  ),
+                                ),
+
+                                Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            singleIssue.title,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            singleIssue.description,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 10),
+
+                                          Text(
+                                            '${singleIssue.longitude}, ${singleIssue.latitude}',
+                                            softWrap: true,
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 13,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                )
+                              ],
+                            ),
+                          )
+                              : Container();
+                        }
+                    ),
                   ]
               ),
             )
