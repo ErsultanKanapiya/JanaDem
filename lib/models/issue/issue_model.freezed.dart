@@ -28,7 +28,7 @@ mixin _$IssueModel {
   double get latitude => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   Map<dynamic, dynamic> get creator => throw _privateConstructorUsedError;
-  List<dynamic> get next_statuses => throw _privateConstructorUsedError;
+  List<StatusModel> get next_statuses => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -51,7 +51,7 @@ abstract class $IssueModelCopyWith<$Res> {
       double latitude,
       String status,
       Map<dynamic, dynamic> creator,
-      List<dynamic> next_statuses});
+      List<StatusModel> next_statuses});
 }
 
 /// @nodoc
@@ -113,7 +113,7 @@ class _$IssueModelCopyWithImpl<$Res, $Val extends IssueModel>
       next_statuses: null == next_statuses
           ? _value.next_statuses
           : next_statuses // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+              as List<StatusModel>,
     ) as $Val);
   }
 }
@@ -135,7 +135,7 @@ abstract class _$$IssueModelImplCopyWith<$Res>
       double latitude,
       String status,
       Map<dynamic, dynamic> creator,
-      List<dynamic> next_statuses});
+      List<StatusModel> next_statuses});
 }
 
 /// @nodoc
@@ -195,7 +195,7 @@ class __$$IssueModelImplCopyWithImpl<$Res>
       next_statuses: null == next_statuses
           ? _value._next_statuses
           : next_statuses // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+              as List<StatusModel>,
     ));
   }
 }
@@ -212,7 +212,7 @@ class _$IssueModelImpl implements _IssueModel {
       required this.latitude,
       required this.status,
       required final Map<dynamic, dynamic> creator,
-      required final List<dynamic> next_statuses})
+      required final List<StatusModel> next_statuses})
       : _creator = creator,
         _next_statuses = next_statuses;
 
@@ -241,9 +241,9 @@ class _$IssueModelImpl implements _IssueModel {
     return EqualUnmodifiableMapView(_creator);
   }
 
-  final List<dynamic> _next_statuses;
+  final List<StatusModel> _next_statuses;
   @override
-  List<dynamic> get next_statuses {
+  List<StatusModel> get next_statuses {
     if (_next_statuses is EqualUnmodifiableListView) return _next_statuses;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_next_statuses);
@@ -312,7 +312,7 @@ abstract class _IssueModel implements IssueModel {
       required final double latitude,
       required final String status,
       required final Map<dynamic, dynamic> creator,
-      required final List<dynamic> next_statuses}) = _$IssueModelImpl;
+      required final List<StatusModel> next_statuses}) = _$IssueModelImpl;
 
   factory _IssueModel.fromJson(Map<String, dynamic> json) =
       _$IssueModelImpl.fromJson;
@@ -334,7 +334,7 @@ abstract class _IssueModel implements IssueModel {
   @override
   Map<dynamic, dynamic> get creator;
   @override
-  List<dynamic> get next_statuses;
+  List<StatusModel> get next_statuses;
   @override
   @JsonKey(ignore: true)
   _$$IssueModelImplCopyWith<_$IssueModelImpl> get copyWith =>

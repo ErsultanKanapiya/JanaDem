@@ -11,7 +11,7 @@ Widget greenProgressIndicator(){
 Widget whiteProgressIndicator(){
   return const Center(
     child: CircularProgressIndicator(
-      color: Color(0xff056C5F),
+      color: Colors.white,
     ),
   );
 }

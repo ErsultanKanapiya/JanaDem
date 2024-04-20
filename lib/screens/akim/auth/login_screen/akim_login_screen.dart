@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
 import 'package:janadem/dio/dio_client.dart';
 import 'package:janadem/requests/auth/login/login.dart';
+import 'package:janadem/screens/widgets/progress_indicator.dart';
 import 'package:janadem/screens/widgets/textform_widget.dart';
 import 'package:janadem/screens/widgets/wait_alert.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -67,7 +68,9 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                       ),
                     ),
                     Text(
-                      'Welcome Government!',
+                      widget.status == 3
+                      ? 'Welcome Government!'
+                      : 'Welcome!',
                       style: GoogleFonts.inter(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -250,7 +253,9 @@ class _AkimLoginScreenState extends State<AkimLoginScreen> {
                               splashFactory: NoSplash.splashFactory,
                               elevation: 0
                           ),
-                          child: Text(
+                          child: loginButtonPressed
+                          ? whiteProgressIndicator()
+                          : Text(
                             'Login',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(

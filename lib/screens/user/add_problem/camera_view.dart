@@ -37,16 +37,16 @@ class CameraViewPage extends ConsumerWidget {
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        onPressed: (){},
-                        icon: const Icon(
-                          Icons.add_photo_alternate,
-                          color: Colors.white,
-                          size: 27,
-                        ),
-                      ),
+                      // IconButton(
+                      //   onPressed: (){},
+                      //   icon: const Icon(
+                      //     Icons.add_photo_alternate,
+                      //     color: Colors.white,
+                      //     size: 27,
+                      //   ),
+                      // ),
                       GestureDetector(
                         onTap: (){
                           ref.watch(photoPathProvider.notifier).state = path;

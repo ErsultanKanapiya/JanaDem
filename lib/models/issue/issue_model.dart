@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:janadem/models/status/status_model.dart';
 
 part 'issue_model.freezed.dart';
 part 'issue_model.g.dart';
@@ -14,7 +15,7 @@ class IssueModel with _$IssueModel {
     required double latitude,
     required String status,
     required Map creator,
-    required List next_statuses
+    required List<StatusModel> next_statuses
   }) = _IssueModel;
 
   factory IssueModel.fromJson(Map<String, dynamic> json) =>

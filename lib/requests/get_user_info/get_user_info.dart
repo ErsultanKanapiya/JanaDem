@@ -25,7 +25,14 @@ class ApiGetUserInfo{
       final res = await _dioClient.get(url, options: Options(headers: headers));
       if (res.statusCode == 200) {
 
-        box.put('user', res.data);
+        if(res.data['user_type'] == 'User'){
+          box.put('user', res.data);
+        } else if (res.data['user_type'] == 'Akimat') {
+          box.put('akim', res.data);
+        } else {
+          box.put('moderator', res.data);
+        }
+
 
       } else {
         debugPrint(res.data['message'].toString());

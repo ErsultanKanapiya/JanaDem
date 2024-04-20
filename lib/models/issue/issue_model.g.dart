@@ -16,7 +16,9 @@ _$IssueModelImpl _$$IssueModelImplFromJson(Map<String, dynamic> json) =>
       latitude: (json['latitude'] as num).toDouble(),
       status: json['status'] as String,
       creator: json['creator'] as Map<String, dynamic>,
-      next_statuses: json['next_statuses'] as List<dynamic>,
+      next_statuses: (json['next_statuses'] as List<dynamic>)
+          .map((e) => StatusModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$$IssueModelImplToJson(_$IssueModelImpl instance) =>

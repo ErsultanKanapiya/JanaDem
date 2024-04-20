@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
 import 'package:janadem/requests/appProviders/issue/issues_state_provider.dart';
+import 'package:janadem/screens/user/location/issue_details.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 final tabBarIndexControllerProvider = StateProvider.autoDispose<int>((ref) => 0);
 
@@ -143,73 +145,91 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                         color: Color(0xff056C5F),
                       ),
                     )
-                        : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: issues.issues!.issuesList.length,
-                        itemBuilder: (context, index){
-                          final singleIssue = issues.issues!.issuesList[index];
-                          return Container(
-                            height: 180,
-                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.blueAccent)
-                            ),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                      height: 170,
-                                      width: 130,
-                                      child: Image.network(
-                                        singleIssue.image,
-                                        fit: BoxFit.cover,
-                                      )
-                                  ),
-                                ),
-
-                                Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            singleIssue.title,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            singleIssue.description,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 10),
-
-                                          Text(
-                                            '${singleIssue.longitude}, ${singleIssue.latitude}',
-                                            softWrap: true,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                )
-                              ],
-                            ),
-                          );
+                        : RefreshIndicator(
+                      color: const Color(0xff056C5F),
+                      onRefresh: () {
+                        return Future.delayed(const Duration(seconds: 1), () {
+                          ref.invalidate(issuesDataProvider);
                         }
+                        );
+                      },
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: issues.issues!.issuesList.length,
+                          itemBuilder: (context, index){
+                            final singleIssue = issues.issues!.issuesList[index];
+                            return GestureDetector(
+                              onTap: (){
+                                PersistentNavBarNavigator.pushNewScreen(
+                                    context,
+                                    screen: IssueDetails(singleIssue.id),
+                                    withNavBar: true
+                                );
+                              },
+                              child: Container(
+                                height: 180,
+                                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.blueAccent)
+                                ),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: SizedBox(
+                                          height: 170,
+                                          width: 130,
+                                          child: Image.network(
+                                            singleIssue.image,
+                                            fit: BoxFit.cover,
+                                          )
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                singleIssue.title,
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              Text(
+                                                singleIssue.description,
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+
+                                              const SizedBox(height: 10),
+
+                                              Text(
+                                                '${singleIssue.longitude}, ${singleIssue.latitude}',
+                                                softWrap: true,
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 13,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                      ),
                     ),
                     issues.isLoading
                         ? const Center(
@@ -217,75 +237,84 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                         color: Color(0xff056C5F),
                       ),
                     )
-                        : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: issues.issues!.issuesList.length,
-                        itemBuilder: (context, index){
-                          final singleIssue = issues.issues!.issuesList[index];
-                          return singleIssue.status == 'IN_PROGRESS'
-                              ? Container(
-                            height: 180,
-                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.blueAccent)
-                            ),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                      height: 170,
-                                      width: 130,
-                                      child: Image.network(
-                                        singleIssue.image,
-                                        fit: BoxFit.cover,
-                                      )
-                                  ),
-                                ),
-
-                                Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            singleIssue.title,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            singleIssue.description,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 10),
-
-                                          Text(
-                                            '${singleIssue.longitude}, ${singleIssue.latitude}',
-                                            softWrap: true,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                )
-                              ],
-                            ),
-                          )
-                              : Container();
+                        : RefreshIndicator(
+                      color: const Color(0xff056C5F),
+                      onRefresh: () {
+                        return Future.delayed(const Duration(seconds: 1), () {
+                          ref.invalidate(issuesDataProvider);
                         }
+                        );
+                      },
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: issues.issues!.issuesList.length,
+                          itemBuilder: (context, index){
+                            final singleIssue = issues.issues!.issuesList[index];
+                            return singleIssue.status == 'IN_PROGRESS'
+                                ? Container(
+                              height: 180,
+                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blueAccent)
+                              ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: SizedBox(
+                                        height: 170,
+                                        width: 130,
+                                        child: Image.network(
+                                          singleIssue.image,
+                                          fit: BoxFit.cover,
+                                        )
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              singleIssue.title,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              singleIssue.description,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+
+                                            const SizedBox(height: 10),
+
+                                            Text(
+                                              '${singleIssue.longitude}, ${singleIssue.latitude}',
+                                              softWrap: true,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                                : Container();
+                          }
+                      ),
                     ),
                     issues.isLoading
                         ? const Center(
@@ -293,75 +322,84 @@ class _LocationScreenState extends ConsumerState<LocationScreen> with SingleTick
                         color: Color(0xff056C5F),
                       ),
                     )
-                        : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: issues.issues!.issuesList.length,
-                        itemBuilder: (context, index){
-                          final singleIssue = issues.issues!.issuesList[index];
-                          return singleIssue.status == 'FINISHED'
-                              ? Container(
-                            height: 180,
-                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.blueAccent)
-                            ),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                      height: 170,
-                                      width: 130,
-                                      child: Image.network(
-                                        singleIssue.image,
-                                        fit: BoxFit.cover,
-                                      )
-                                  ),
-                                ),
-
-                                Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            singleIssue.title,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            singleIssue.description,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 10),
-
-                                          Text(
-                                            '${singleIssue.longitude}, ${singleIssue.latitude}',
-                                            softWrap: true,
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                )
-                              ],
-                            ),
-                          )
-                              : Container();
+                        : RefreshIndicator(
+                      color: const Color(0xff056C5F),
+                      onRefresh: () {
+                        return Future.delayed(const Duration(seconds: 1), () {
+                          ref.invalidate(issuesDataProvider);
                         }
+                        );
+                      },
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: issues.issues!.issuesList.length,
+                          itemBuilder: (context, index){
+                            final singleIssue = issues.issues!.issuesList[index];
+                            return singleIssue.status == 'APPROVED'
+                                ? Container(
+                              height: 180,
+                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blueAccent)
+                              ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: SizedBox(
+                                        height: 170,
+                                        width: 130,
+                                        child: Image.network(
+                                          singleIssue.image,
+                                          fit: BoxFit.cover,
+                                        )
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              singleIssue.title,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              singleIssue.description,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+
+                                            const SizedBox(height: 10),
+
+                                            Text(
+                                              '${singleIssue.longitude}, ${singleIssue.latitude}',
+                                              softWrap: true,
+                                              style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 13,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                  )
+                                ],
+                              ),
+                            )
+                                : Container();
+                          }
+                      ),
                     ),
                   ]
               ),

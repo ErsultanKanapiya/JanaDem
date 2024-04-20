@@ -54,14 +54,13 @@ class _SplashScreenState extends State<SplashScreen> {
           Get.offAll(
                   () => const UserBottomNavBar()
           );
-        } else if (box.get('akim') != null){
+        } else if (box.get('akim') != null || box.get('moderator') != null){
           Get.offAll(
                   () => const AkimBottomNavBar()
           );
         } else {
           chooseEnroll();
         }
-
       }
     });
   }

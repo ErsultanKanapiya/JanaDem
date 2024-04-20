@@ -47,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+print(acc.toMap());
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

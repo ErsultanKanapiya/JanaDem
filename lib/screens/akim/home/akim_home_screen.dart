@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:janadem/constants/assets.dart';
+import 'package:janadem/constants/hive_boxes.dart';
 
 class AkimHomeScreen extends ConsumerStatefulWidget {
   const AkimHomeScreen({super.key});
@@ -14,6 +15,9 @@ class AkimHomeScreen extends ConsumerStatefulWidget {
 class _AkimHomeScreenState extends ConsumerState<AkimHomeScreen> {
   @override
   Widget build(BuildContext context) {
+
+    print(acc.toMap());
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -55,7 +59,8 @@ class _AkimHomeScreenState extends ConsumerState<AkimHomeScreen> {
                                     color: Colors.white
                                 ),
                               ),
-                              Text(
+                              acc.get('akim') != null
+                              ? Text(
                                 'Government',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
@@ -63,7 +68,8 @@ class _AkimHomeScreenState extends ConsumerState<AkimHomeScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white
                                 ),
-                              ),
+                              )
+                              : Container(),
                             ],
                           ),
                         ],

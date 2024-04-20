@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,7 +18,7 @@ class ApiChangeStatus{
 
   ApiChangeStatus(this._dioClient);
 
-  Future<void> editProfileInfo(String issue_id, String status_id) async {
+  Future<void> changeIssueStatus(int issue_id, String status_id, WidgetRef ref) async {
     final String url = '${Endpoints().mainEndpoint}/v1/issue/change_status/';
 
     final headers = {
