@@ -19,6 +19,8 @@ class ApiEditProfile{
 
   ApiEditProfile(this._dioClient);
 
+  // edit profile api request
+
   Future<void> editProfileInfo(Map data) async {
     final String url = '${Endpoints().mainEndpoint}/v1/user/${box.get('user')['id']}/';
 

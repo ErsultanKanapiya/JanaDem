@@ -13,6 +13,8 @@ class ApiGetUserInfo{
 
   ApiGetUserInfo(this._dioClient);
 
+  // this is one of the main apis, cause it gives us an info about user
+
   Future<void> getUserInfo() async {
     final String url = '${Endpoints().mainEndpoint}/v1/user/request_user_info/';
 

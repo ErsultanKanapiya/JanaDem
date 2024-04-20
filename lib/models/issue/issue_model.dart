@@ -4,6 +4,8 @@ import 'package:janadem/models/status/status_model.dart';
 part 'issue_model.freezed.dart';
 part 'issue_model.g.dart';
 
+// IssueModel
+
 @freezed
 class IssueModel with _$IssueModel {
   const factory IssueModel({

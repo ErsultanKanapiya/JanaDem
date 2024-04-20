@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'status_model.freezed.dart';
 part 'status_model.g.dart';
 
+// StatusModel
+
 @freezed
 class StatusModel with _$StatusModel {
   const factory StatusModel({

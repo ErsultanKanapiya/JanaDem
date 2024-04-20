@@ -10,6 +10,8 @@ class ApiGetIssue{
 
   ApiGetIssue(this._dioClient);
 
+  // this api is used to get info about single issue
+
   Future<IssueModel?> getIssue(int id) async {
     final String url = '${Endpoints().mainEndpoint}/v1/issue/$id';
 

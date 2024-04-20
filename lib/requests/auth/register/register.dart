@@ -13,6 +13,8 @@ class ApiRegister{
 
   ApiRegister(this._dioClient);
 
+  // registering api request
+
   Future<void> register(String first_name, String lastname, String phone, String email, String dateOfBirth, String password) async {
     final String url = '${Endpoints().mainEndpoint}/v1/user/';
 

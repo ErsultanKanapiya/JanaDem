@@ -18,6 +18,8 @@ class ApiChangeStatus{
 
   ApiChangeStatus(this._dioClient);
 
+  // api request to change status of issue that user send by himself
+
   Future<void> changeIssueStatus(int issue_id, String status_id, WidgetRef ref) async {
     final String url = '${Endpoints().mainEndpoint}/v1/issue/change_status/';
 

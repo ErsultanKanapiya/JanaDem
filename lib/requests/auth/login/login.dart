@@ -16,6 +16,8 @@ class ApiLogin{
 
   ApiLogin(this._dioClient);
 
+  // api request for login, that contains phone number and password
+
   Future<void> login(String phone, String password, int status) async {
     final String url = '${Endpoints().mainEndpoint}/v1/user/login';
 
